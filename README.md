@@ -115,8 +115,7 @@ ding diddily dang dang dang dang dang ho neighboreeno!
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *    
 ```
 
-examples of valid dokely programs can be found here
-[More Examples...](https://github.com/saulpanders/dokely/examples
+examples of valid dokely programs can be found [here](https://github.com/saulpanders/dokely/examples)
 
 ### dokely2bf.py
 Utility for converting between dokely and brainfuck. Makes the language infinitely more usable and fun!
