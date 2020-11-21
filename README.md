@@ -14,7 +14,7 @@ Acts at the dokely interpreter. To use, just run it with the target ".simp" file
 
 note that all valid dokely files are required to have:
 - The proper header (i.e. "Hi")
-- The proper footer (i.e. "ho neighboreeno")
+- The proper footer (i.e. "ho neighboreeno!")
 - a ".simp" extension
 
 ## Usage
