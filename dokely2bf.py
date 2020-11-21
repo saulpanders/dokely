@@ -7,7 +7,6 @@ import argparse
 def bf2dok(code):
 	print("[+] parsing brainfuck to dokely...")
 	code = clean_bf_code(code).split()
-	print(code)
 	retstr = ""
 	for cmd in code:
 		if cmd.lower() == "<":
@@ -33,7 +32,6 @@ def bf2dok(code):
 def dok2bf(code):
 	print("[+] parsing dokely to brainfuck...")
 	code = clean_dok_code(code.split()).split()
-	print(code) 
 	retstr = ""
 	for cmd in code:
 		if cmd.lower() == "ding":

@@ -6,7 +6,7 @@
 #			 https://github.com/pocmo/Python-Brainfuck/blob/master/brainfuck.py
 #	pseudo-inspiration: https://github.com/omkarjc27/OooWee/blob/master/Ooo
 #	
-#	getch thanks to https://github.com/joeyespo/py-getch
+#	brainfuck interpreter design thanks to https://github.com/pablojorge/brainfuck/blob/master/python/brainfuck-simple.py#L5
 #
 # Dokely 		Brainfuck 		action
 # 
@@ -22,108 +22,82 @@
 #	Dokely programs must be friendly (i.e prefix "Hi", suffix "ho neighboreeno!") to run 
 #
 
-import argparse
 import os
 import getch
+import sys
 
+def precompute_jumps(program):
+    stack = []
+    ret = {}
+
+    pc = 0
+
+    while not pc == len(program):
+        opcode = program[pc]
+        if opcode == "doodley":
+            stack.append(pc)
+        elif opcode == "diddily":
+            target = stack.pop()
+            ret[target] = pc
+            ret[pc] = target 
+        pc += 1
+
+    return ret
 
 def interpret(program):
-	code = clean_code(program).split()
-	bracemap = bracket_stack(code)
+    buffer = [0]
+    code = clean_code(program).split()
+    jump_map = precompute_jumps(program)
 
-	cells, codeptr, cellptr = [0], 0, 0
+    ptr = 0
+    pc = 0
 
-	while codeptr < len(code):
-		try:
-			command = code[codeptr]
-			if command.lower() == "ding":
-				cellptr += 1
-				if cellptr == len(cells): 
-					cells.append(0)
-
-			if command.lower() == "dong":
-				if cellptr <= 0:
-					cellptr = 0
-				else: 
-					cellptr = cellptr - 1
-
-			if command.lower() == "dang":
-				if cells[cellptr] < 255:
-					cells[cellptr] = cells[cellptr] + 1 
-				else: 
-					cells[cellptr] = 0
-
-			if command.lower() == "diggity":
-				if cells[cellptr] > 0:
-					cells[cellptr] = cells[cellptr] - 1 
-				else: 
-					cells[cellptr] = 255
-
-			if command.lower() == "doodley" and cells[cellptr] == 0: 
-				codeptr = bracemap[codeptr]
-
-			if command.lower() == "diddily" and cells[cellptr] != 0: 
-				codeptr = bracemap[codeptr]
-
-			if command == "dokely": 
-				print(chr(cells[cellptr]))
-
-			if command == "daddley": 
-				cells[cellptr] = ord(getch.getch())
-
-			#keep reading
-			codeptr += 1
-		except:
-			raise
+    while not pc == len(program):
+        opcode = program[pc]
+        if opcode == "dong": 
+            ptr += 1
+            if ptr == len(buffer): buffer.append(0)
+        elif opcode == "ding": ptr -= 1
+        elif opcode == "dang": buffer[ptr] += 1
+        elif opcode == "diggity": buffer[ptr] -= 1
+        elif opcode == "dokely": 
+            sys.stdout.write(chr(buffer[ptr]))
+            sys.stdout.flush()
+        elif opcode == "daddley": 
+            buffer[ptr] = ord(sys.stdin.read(1))
+        elif opcode == "doodley":
+            if buffer[ptr] == 0: pc = jump_map[pc]
+        elif opcode == "diddily":
+            if buffer[ptr] != 0: pc = jump_map[pc]
+        pc += 1
 
 def clean_code(code):
 	return ' '.join(filter(lambda x: x.lower() in ['ding', 'dong', 'diggity', 'dang', 'diddily', 'doodley', 'daddley', 'dokely'], code))
 
-def bracket_stack(code):
-	temp_bracestack, bracemap = [], {}
-	for position, command in enumerate(code):
-		# [
-		if command.lower() == "doodley": 
-			temp_bracestack.append(position)
-		
-		# ]
-		if command.lower() == "diddily":
-			start = temp_bracestack.pop()
-			bracemap[start] = position
-			bracemap[position] = start
-	return bracemap
 
 
 def main():
 	suffix = "simp"
 	filename = 'test.simp'
 	words = []
-	parser = argparse.ArgumentParser(description='Dokely: the brainfuck variant for Ned Flanders')
-	parser.add_argument('-i', '--input', type=str, help="dokely file to run (.simp)")
-	args = parser.parse_args()
 
-	if(args.input):
-		if args.input.endswith('.'+suffix):
-			filename = args.input
-			if os.path.exists(filename):
-				with open(filename, 'r') as f:
-					file_in = f.read()
-		else:
-			print("Can't find file\n")
-			exit(0)
-				
-		words = file_in.split()
-		#check signature
-		if(words[0].lower() == "hi") and (words[-2].lower() == "ho") and (words[-1].lower() == "neighboreeno!"):
-			program = words[1:len(words) - 2]
-			interpret(program)
-		else:
-			print("error, .simp file must be a friendly neighbor. Check your prefix / suffix (Hi / ho neighboreeno)")
-			exit(0)
+	if sys.argv[1]:
+		with open(sys.argv[1], "r") as f:
+			if("simp" in sys.argv[1]):
+				contents = f.read()
+			else:
+				print("error, file must have a .simp extension")
 	else:
-		print("error, need a file")
+		contents = sys.stdin.read()
+				
+	words = contents.split()
+	#check signature
+	if(words[0].lower() == "hi") and (words[-2].lower() == "ho") and (words[-1].lower() == "neighboreeno!"):
+		program = words[1:len(words) - 2]
+		interpret(program)
+	else:
+		print("error, .simp file must be a friendly neighbor. Check your prefix / suffix (Hi / ho neighboreeno)")
 		exit(0)
-
 
 
 if __name__ == "__main__":
