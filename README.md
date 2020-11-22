@@ -133,10 +133,10 @@ Utility for converting between dokely and brainfuck. Makes the language infinite
 ![Sample Execution](sample_execution2.png)
 
 ## Installation
-Download or install the repo using:```$ git clone https://github.com/omkarjc27/OooWee```
+Download or install the repo using:```$ git clone https://github.com/saulpanders/dokely.git```
 
 ## Command Syntax
-| Dokely 	| BFE	|	What it does																										|
+| Dokely 	| BFE	|	What it does																										
 | ---------	| ------|---------------------------------------------------------------------------------------------------------------------- |
 |	ding	| 	<	|	increment data ptr (ptr++)																							|
 |	dong	| 	>	|	decrement data ptr (ptr--)																							|
