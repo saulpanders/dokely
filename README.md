@@ -1,7 +1,7 @@
 # Dokely
 
 ![Flanders](flanders.png)
-#### The TBE programming language for Ned Flanders
+#### The Trivial Brainfuck Equivalent (TBE) programming language for Ned Flanders
 
 ### Why?
 I think its hilarious to have a fully turing complete language comprised of flanderisms as its base symbols.
